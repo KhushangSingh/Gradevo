@@ -10,10 +10,5 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "@radix-ui/react-toast": "^1.2.15",
-    "random-words": "^2.0.1",
-    "uuid": "^13.0.0"
-  }
+  "license": "ISC"
 }
