@@ -5,10 +5,7 @@ const User = require('../models/User');
 const protect = asyncHandler(async (req, res, next) => {
   let token;
 
-  // Check for token in cookies FIRST, then fallback to Authorization header
-  if (req.cookies && req.cookies.token) {
-    token = req.cookies.token;
-  } else if (
+  if (
     req.headers.authorization &&
     req.headers.authorization.startsWith('Bearer')
   ) {

@@ -7,16 +7,6 @@ const { v4: uuidv4 } = require('uuid');
 const { generate: generateRandomWord } = require('random-words');
 const { isCollegeEmail, resolveCollegeFromDomain } = require('../utils/collegeDomains');
 
-// Helper to set Cookie
-const setTokenCookie = (res, token) => {
-  res.cookie('token', token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days rolling expiration
-  });
-};
-
 // @desc    Register new user
 // @route   POST /api/users
 // @access  Public
@@ -99,9 +89,6 @@ const registerUser = asyncHandler(async (req, res) => {
       collegeWarning = `Your email domain suggests "${domainCheck.collegeName}", but you selected "${collegeName}". Please verify.`;
     }
 
-    const token = generateToken(user._id);
-    setTokenCookie(res, token);
-
     res.status(201).json({
       _id: user.id,
       name: user.name,
@@ -109,6 +96,7 @@ const registerUser = asyncHandler(async (req, res) => {
       college: user.college,
       friendCode: user.friendCode,
       collegeWarning,
+      token: generateToken(user._id),
     });
   } else {
     res.status(400);
@@ -125,15 +113,13 @@ const loginUser = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email });
 
   if (user && (await bcrypt.compare(password, user.password))) {
-    const token = generateToken(user._id);
-    setTokenCookie(res, token);
-
     res.json({
       _id: user.id,
       name: user.name,
       email: user.email,
       college: user.college,
-      friendCode: user.friendCode
+      friendCode: user.friendCode,
+      token: generateToken(user._id),
     });
   } else {
     res.status(401);
@@ -148,11 +134,11 @@ const getMe = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user.id);
   
   if (user) {
-    // Implementing Rolling Session: Refresh the 7-day cookie maxAge
-    const token = generateToken(user._id);
-    setTokenCookie(res, token);
-    
-    res.status(200).json(user);
+    // Return token to allow frontend to reset storage timer explicitly
+    res.status(200).json({ 
+      ...user._doc,
+      token: generateToken(user._id)
+    });
   } else {
     res.status(404);
     throw new Error('User not found');
