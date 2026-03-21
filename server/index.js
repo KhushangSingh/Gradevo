@@ -4,6 +4,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const rateLimit = require('express-rate-limit');
+const cookieParser = require('cookie-parser');
 const connectDB = require('./config/db');
 const { errorHandler } = require('./middleware/errorMiddleware');
 
@@ -34,6 +35,7 @@ app.use(cors({
 // ─── Body Parsers ─────────────────────────────────────────────────────────────
 app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: false, limit: '10kb' }));
+app.use(cookieParser());
 
 // ─── NoSQL Injection Sanitisation ────────────────────────────────────────────
 // Express v5 makes req.query a read-only getter, so we must NOT let

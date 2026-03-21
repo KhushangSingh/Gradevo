@@ -7,6 +7,16 @@ const { v4: uuidv4 } = require('uuid');
 const { generate: generateRandomWord } = require('random-words');
 const { isCollegeEmail, resolveCollegeFromDomain } = require('../utils/collegeDomains');
 
+// Helper to set Cookie
+const setTokenCookie = (res, token) => {
+  res.cookie('token', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days rolling expiration
+  });
+};
+
 // @desc    Register new user
 // @route   POST /api/users
 // @access  Public
@@ -89,12 +99,14 @@ const registerUser = asyncHandler(async (req, res) => {
       collegeWarning = `Your email domain suggests "${domainCheck.collegeName}", but you selected "${collegeName}". Please verify.`;
     }
 
+    const token = generateToken(user._id);
+    setTokenCookie(res, token);
+
     res.status(201).json({
       _id: user.id,
       name: user.name,
       email: user.email,
       college: user.college,
-      token: generateToken(user._id),
       friendCode: user.friendCode,
       collegeWarning,
     });
@@ -113,12 +125,14 @@ const loginUser = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email });
 
   if (user && (await bcrypt.compare(password, user.password))) {
+    const token = generateToken(user._id);
+    setTokenCookie(res, token);
+
     res.json({
       _id: user.id,
       name: user.name,
       email: user.email,
       college: user.college,
-      token: generateToken(user._id),
       friendCode: user.friendCode
     });
   } else {
@@ -132,7 +146,30 @@ const loginUser = asyncHandler(async (req, res) => {
 // @access  Private
 const getMe = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user.id);
-  res.status(200).json(user);
+  
+  if (user) {
+    // Implementing Rolling Session: Refresh the 7-day cookie maxAge
+    const token = generateToken(user._id);
+    setTokenCookie(res, token);
+    
+    res.status(200).json(user);
+  } else {
+    res.status(404);
+    throw new Error('User not found');
+  }
+});
+
+// @desc    Logout user
+// @route   POST /api/users/logout
+// @access  Public
+const logoutUser = asyncHandler(async (req, res) => {
+  res.cookie('token', '', {
+    httpOnly: true,
+    expires: new Date(0),
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+  });
+  res.status(200).json({ message: 'Logged out completely' });
 });
 
 // @desc    Update user profile
@@ -334,6 +371,7 @@ const generateToken = (id) => {
 module.exports = {
   registerUser,
   loginUser,
+  logoutUser,
   getMe,
   updateProfile,
   deleteProfile,
