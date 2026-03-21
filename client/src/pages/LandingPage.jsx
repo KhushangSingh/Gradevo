@@ -91,7 +91,7 @@ const LandingPage = () => {
                         {[
                             { icon: 'domain', title: 'College Verified', desc: 'Secure signup linked exclusively to your official college email domain.' },
                             { icon: 'leaderboard', title: 'Granular Rankings', desc: 'Filter rankings by Batch, Branch, and Specialization instantly.' },
-                            { icon: 'lock', title: 'Privacy First', desc: 'Your data is strictly visible only to peers within your own college network.' }
+                            { icon: 'lock', title: 'Privacy First', desc: 'Your grades and ranking are strictly private to you. Only friends with your permission can view them.' }
                         ].map((feature, i) => (
                             <div key={i} className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
                                 <div className="w-14 h-14 rounded-2xl bg-orange-50 border border-orange-100 text-orange-500 flex items-center justify-center mb-6 group-hover:bg-orange-100 transition-colors">
