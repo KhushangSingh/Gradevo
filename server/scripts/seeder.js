@@ -159,4 +159,4 @@ if (process.argv[2] === '-d') {
 // Import Data: npm run data:import
 // Delete Data: npm run data:destroy
 
-git commit -m "dummy data and finde me button"   
+//git commit -m "dummy data and finde me button"   
