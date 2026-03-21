@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import AuthContext from './context/AuthContext';
-import Sidebar from './components/Sidebar';
+import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Dashboard from './pages/Dashboard';
 import Leaderboard from './pages/Leaderboard';
@@ -26,12 +26,12 @@ const PrivateRoute = ({ children }) => {
 
 const Layout = ({ children }) => {
     return (
-        <div className="flex min-h-screen bg-background-light font-display overflow-hidden text-slate-900">
-            <Sidebar />
-            <main className="flex-1 h-screen overflow-y-auto bg-background-light relative flex flex-col">
+        <div className="flex flex-col min-h-screen bg-background-light font-display overflow-hidden text-slate-900">
+            <Navbar />
+            <main className="flex-1 overflow-y-auto bg-background-light relative flex flex-col">
                 {/* Header Gradient Glow */}
                 <div className="absolute top-0 left-0 right-0 h-96 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none"></div>
-                <div className="max-w-7xl mx-auto p-8 relative z-10 w-full flex-1">
+                <div className="max-w-7xl mx-auto p-4 sm:p-8 relative z-10 w-full flex-1">
                     {children}
                 </div>
                 <Footer />
