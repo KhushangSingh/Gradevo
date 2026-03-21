@@ -38,10 +38,6 @@ const LandingPage = () => {
             {/* Hero Section */}
             <header className="max-w-7xl mx-auto px-6 py-20 lg:py-32 flex flex-col items-center text-center">
                 <div className="space-y-6 max-w-3xl">
-                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-50 border border-orange-100 text-orange-600 font-bold text-xs uppercase tracking-widest mx-auto">
-                        <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
-                        Live College Rankings
-                    </div>
                     <h1 className="text-5xl lg:text-7xl font-black tracking-tight leading-[1.1] text-slate-900 mx-auto">
                         Know Where You <br />
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-orange-600">Stand.</span>
