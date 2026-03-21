@@ -86,11 +86,11 @@ const Register = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className={labelClasses}>Full Name</label>
-              <input type="text" name="name" placeholder="Rahul Sharma" onChange={handleChange} className={inputClasses} required />
+              <input type="text" name="name" placeholder="Sheersh Singh" onChange={handleChange} className={inputClasses} required />
             </div>
             <div>
               <label className={labelClasses}>College Email</label>
-              <input type="email" name="email" placeholder="rahul@college.ac.in" onChange={handleChange} className={inputClasses} required />
+              <input type="email" name="email" placeholder="sheersh@college.ac.in" onChange={handleChange} className={inputClasses} required />
             </div>
           </div>
 

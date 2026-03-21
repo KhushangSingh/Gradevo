@@ -17,7 +17,18 @@ const Login = () => {
       addToast('Welcome back!', 'success');
       navigate('/dashboard');
     } catch (err) {
-      addToast(err.response?.data?.message || 'Login failed', 'error');
+      const serverMsg = err.response?.data?.message || '';
+      const isNotFound =
+        serverMsg.toLowerCase().includes('invalid credentials') ||
+        serverMsg.toLowerCase().includes('not found') ||
+        err.response?.status === 401;
+
+      if (isNotFound) {
+        addToast('No account found. Redirecting to registration…', 'error', 3000);
+        setTimeout(() => navigate('/register'), 3000);
+      } else {
+        addToast(serverMsg || 'Login failed', 'error');
+      }
     }
   };
 
@@ -45,14 +56,14 @@ const Login = () => {
             <h2 className="text-2xl font-bold text-slate-900">Welcome Back</h2>
             <p className="text-slate-500 text-sm">Sign in to view your academic rank</p>
         </div>
-        
+
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div className="space-y-1">
             <label className="text-xs font-medium text-slate-500 uppercase ml-1">College Email</label>
             <input
                 type="email"
                 className="w-full bg-slate-50 border border-slate-200 hover:border-primary/50 hover:bg-white rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-primary/50 focus:bg-white focus:ring-1 focus:ring-primary/50 transition-all"
-                placeholder="yourname@college.ac.in"
+                placeholder="sheersh@college.ac.in"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -73,7 +84,7 @@ const Login = () => {
             Sign In
           </button>
         </form>
-        
+
         <p className="text-center text-slate-500 text-sm mt-6">
             Don't have an account? <Link to="/register" className="text-primary hover:text-orange-600 transition-colors font-medium">Register here</Link>
         </p>

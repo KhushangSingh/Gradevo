@@ -58,15 +58,15 @@ export const ToastProvider = ({ children }) => {
                 {toasts.map((toast) => (
                     <div
                         key={toast.id}
-                        className={`pointer-events-auto min-w-[300px] max-w-sm rounded-2xl p-4 flex items-start gap-3 transition-all duration-300 overflow-hidden relative ${getStyles(toast.type)}`}
+                        className={`pointer-events-auto min-w-[300px] max-w-sm rounded-2xl px-4 py-3 flex items-center gap-3 transition-all duration-300 overflow-hidden relative ${getStyles(toast.type)}`}
                     >
-                        <span className="material-symbols-outlined mt-0.5 text-white text-xl">
+                        <span className="material-symbols-outlined text-white text-xl shrink-0">
                             {getIcon(toast.type)}
                         </span>
                         <div className="flex-1">
                             <p className="text-sm font-bold text-white leading-snug">{toast.message}</p>
                         </div>
-                        <button onClick={() => removeToast(toast.id)} className="text-white/60 hover:text-white transition-colors mt-0.5">
+                        <button onClick={() => removeToast(toast.id)} className="text-white/60 hover:text-white transition-colors shrink-0">
                             <span className="material-symbols-outlined text-lg">close</span>
                         </button>
                     </div>
