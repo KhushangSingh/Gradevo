@@ -2,10 +2,18 @@ import React, { useState, useContext } from 'react';
 import AuthContext from '../context/AuthContext';
 import ToastContext from '../context/ToastContext';
 import { useNavigate, Link } from 'react-router-dom';
+import axios from 'axios';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [recoveryEmail, setRecoveryEmail] = useState('');
+  const [securityQuestion, setSecurityQuestion] = useState('');
+  const [securityAnswer, setSecurityAnswer] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [forgotLoading, setForgotLoading] = useState(false);
   const { login } = useContext(AuthContext);
   const { addToast } = useContext(ToastContext);
   const navigate = useNavigate();
@@ -29,6 +37,71 @@ const Login = () => {
       } else {
         addToast(serverMsg || 'Login failed', 'error');
       }
+    }
+  };
+
+  const handleGetQuestion = async () => {
+    if (!recoveryEmail.trim()) {
+      addToast('Please enter your email first.', 'warning');
+      return;
+    }
+
+    setForgotLoading(true);
+    try {
+      const { data } = await axios.post('/api/users/forgot-password/question', {
+        email: recoveryEmail,
+      });
+      setSecurityQuestion(data.securityQuestion);
+      addToast('Security question loaded. Answer it to reset password.', 'success');
+    } catch (err) {
+      addToast(err.response?.data?.message || 'Could not fetch recovery question', 'error');
+    } finally {
+      setForgotLoading(false);
+    }
+  };
+
+  const handleResetPassword = async () => {
+    if (!securityQuestion) {
+      addToast('Please fetch your security question first.', 'warning');
+      return;
+    }
+
+    if (!securityAnswer.trim() || !newPassword || !confirmPassword) {
+      addToast('Please fill all recovery fields.', 'warning');
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      addToast('New password must be at least 6 characters.', 'warning');
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      addToast('New password and confirm password do not match.', 'warning');
+      return;
+    }
+
+    setForgotLoading(true);
+    try {
+      const { data } = await axios.post('/api/users/forgot-password/reset', {
+        email: recoveryEmail,
+        securityAnswer,
+        newPassword,
+      });
+
+      addToast(data?.message || 'Password reset successful.', 'success');
+      setShowForgotPassword(false);
+      setEmail(recoveryEmail);
+      setPassword('');
+      setRecoveryEmail('');
+      setSecurityQuestion('');
+      setSecurityAnswer('');
+      setNewPassword('');
+      setConfirmPassword('');
+    } catch (err) {
+      addToast(err.response?.data?.message || 'Password reset failed', 'error');
+    } finally {
+      setForgotLoading(false);
     }
   };
 
@@ -83,6 +156,80 @@ const Login = () => {
           <button type="submit" className="bg-primary hover:bg-orange-600 text-white py-3.5 rounded-xl font-bold hover:shadow-lg hover:shadow-primary/25 transition-all active:scale-95 mt-2">
             Sign In
           </button>
+
+          <button
+            type="button"
+            onClick={() => setShowForgotPassword((prev) => !prev)}
+            className="text-primary hover:text-orange-600 text-sm font-medium mt-1 self-center"
+          >
+            {showForgotPassword ? 'Close Forgot Password' : 'Forgot Password?'}
+          </button>
+
+          {showForgotPassword && (
+            <div className="border border-slate-200 rounded-xl p-4 bg-slate-50 space-y-3">
+              <p className="text-xs text-slate-500">
+                Recover your account using your security question.
+              </p>
+
+              <input
+                type="email"
+                className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all"
+                placeholder="Enter your registered email"
+                value={recoveryEmail}
+                onChange={(e) => setRecoveryEmail(e.target.value)}
+              />
+
+              <button
+                type="button"
+                onClick={handleGetQuestion}
+                disabled={forgotLoading}
+                className="w-full border border-primary text-primary hover:bg-primary hover:text-white py-2.5 rounded-xl font-semibold transition-all disabled:opacity-60"
+              >
+                {forgotLoading ? 'Please wait...' : 'Get Security Question'}
+              </button>
+
+              {securityQuestion && (
+                <>
+                  <div className="text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-xl px-4 py-3">
+                    {securityQuestion}
+                  </div>
+
+                  <input
+                    type="text"
+                    className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all"
+                    placeholder="Enter your answer"
+                    value={securityAnswer}
+                    onChange={(e) => setSecurityAnswer(e.target.value)}
+                  />
+
+                  <input
+                    type="password"
+                    className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all"
+                    placeholder="New password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                  />
+
+                  <input
+                    type="password"
+                    className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all"
+                    placeholder="Confirm new password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                  />
+
+                  <button
+                    type="button"
+                    onClick={handleResetPassword}
+                    disabled={forgotLoading}
+                    className="w-full bg-primary hover:bg-orange-600 text-white py-2.5 rounded-xl font-bold transition-all disabled:opacity-60"
+                  >
+                    {forgotLoading ? 'Resetting...' : 'Reset Password'}
+                  </button>
+                </>
+              )}
+            </div>
+          )}
         </form>
 
         <p className="text-center text-slate-500 text-sm mt-6">

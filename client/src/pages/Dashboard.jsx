@@ -7,10 +7,17 @@ const Dashboard = () => {
     const { user } = useContext(AuthContext);
     const [branchLeaderboard, setBranchLeaderboard] = useState([]);
     const [specLeaderboard, setSpecLeaderboard] = useState([]);
+    const [showRecoveryPrompt, setShowRecoveryPrompt] = useState(false);
     
     useEffect(() => {
         if (user) {
           fetchLeaderboards();
+        }
+    }, [user]);
+
+    useEffect(() => {
+        if (user?.hasRecovery === false) {
+            setShowRecoveryPrompt(true);
         }
     }, [user]);
 
@@ -110,6 +117,41 @@ const Dashboard = () => {
 
     return (
         <div className="space-y-6">
+            {showRecoveryPrompt && (
+                <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+                    <div className="w-full max-w-md bg-white rounded-2xl border border-slate-200 shadow-xl p-6">
+                        <div className="flex items-start justify-between gap-3 mb-3">
+                            <h3 className="text-lg font-bold text-slate-900">Set Up Password Recovery</h3>
+                            <button
+                                onClick={() => setShowRecoveryPrompt(false)}
+                                className="text-slate-400 hover:text-slate-700"
+                                type="button"
+                            >
+                                <span className="material-symbols-outlined">close</span>
+                            </button>
+                        </div>
+                        <p className="text-sm text-slate-600 mb-5">
+                            Add your security question and answer to enable forgot password recovery.
+                        </p>
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => setShowRecoveryPrompt(false)}
+                                type="button"
+                                className="flex-1 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold"
+                            >
+                                Later
+                            </button>
+                            <Link
+                                to="/profile"
+                                className="flex-1 py-2.5 rounded-xl bg-primary hover:bg-orange-600 text-white font-semibold text-center"
+                            >
+                                Open Profile
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Header Section */}
             <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>

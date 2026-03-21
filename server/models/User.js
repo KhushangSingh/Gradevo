@@ -15,6 +15,12 @@ const userSchema = mongoose.Schema(
       type: String,
       required: [true, 'Please add a password'],
     },
+    securityQuestion: {
+      type: String,
+    },
+    securityAnswer: {
+      type: String,
+    },
     cgpa: {
       type: Number,
       required: [true, 'Please add CGPA'],

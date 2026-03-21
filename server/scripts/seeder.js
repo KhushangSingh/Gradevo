@@ -68,11 +68,11 @@ const generateDummyUsers = async () => {
       const name = nameParts.map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
       const email = `${nameParts.join('.')}.${uuidv4().substring(0, 4)}@vitbhopal.ac.in`.toLowerCase();
       
-      // Generate CGPA with 3 decimal places to minimize collisions (cap at 9.5)
-      // We add a tiny unique offset based on index to ensure they are strictly different
+      // Generate CGPA with 2 decimal places (cap at 9.5)
+      // We add a tiny unique offset based on index to ensure they are varied
       const randomBase = Math.random() * (9.5 - 7) + 7;
-      const uniqueOffset = (i * 0.0001) % 0.01;
-      const cgpa = parseFloat((randomBase + uniqueOffset).toFixed(3));
+      const uniqueOffset = (i * 0.01) % 0.1;
+      const cgpa = parseFloat((randomBase + uniqueOffset).toFixed(2));
       
       const anonymousName = generate({ exactly: 2, join: ' ' });
       const friendCode = uuidv4().substring(0, 8).toUpperCase();

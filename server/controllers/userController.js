@@ -109,6 +109,7 @@ const registerUser = asyncHandler(async (req, res) => {
       email: user.email,
       college: user.college,
       friendCode: user.friendCode,
+      hasRecovery: false,
       collegeWarning,
       token: generateToken(user._id),
     });
@@ -133,12 +134,74 @@ const loginUser = asyncHandler(async (req, res) => {
       email: user.email,
       college: user.college,
       friendCode: user.friendCode,
+      hasRecovery: Boolean(user.securityQuestion && user.securityAnswer),
       token: generateToken(user._id),
     });
   } else {
     res.status(401);
     throw new Error('Invalid credentials');
   }
+});
+
+// @desc    Start forgot password flow by fetching security question
+// @route   POST /api/users/forgot-password/question
+// @access  Public
+const getForgotPasswordQuestion = asyncHandler(async (req, res) => {
+  const email = req.body.email?.trim().toLowerCase();
+
+  if (!email) {
+    res.status(400);
+    throw new Error('Please provide your email');
+  }
+
+  const user = await User.findOne({ email }).select('securityQuestion');
+
+  if (!user || !user.securityQuestion) {
+    res.status(404);
+    throw new Error('Recovery question not found for this account');
+  }
+
+  res.status(200).json({
+    securityQuestion: user.securityQuestion,
+  });
+});
+
+// @desc    Reset password using security question answer
+// @route   POST /api/users/forgot-password/reset
+// @access  Public
+const resetPasswordWithSecurityAnswer = asyncHandler(async (req, res) => {
+  const email = req.body.email?.trim().toLowerCase();
+  const answer = req.body.securityAnswer?.trim().toLowerCase();
+  const newPassword = req.body.newPassword;
+
+  if (!email || !answer || !newPassword) {
+    res.status(400);
+    throw new Error('Please provide email, answer, and new password');
+  }
+
+  if (newPassword.length < 6) {
+    res.status(400);
+    throw new Error('New password must be at least 6 characters');
+  }
+
+  const user = await User.findOne({ email }).select('password securityAnswer');
+
+  if (!user || !user.securityAnswer) {
+    res.status(404);
+    throw new Error('Recovery setup not found for this account');
+  }
+
+  const isAnswerValid = await bcrypt.compare(answer, user.securityAnswer);
+  if (!isAnswerValid) {
+    res.status(401);
+    throw new Error('Incorrect recovery answer');
+  }
+
+  const salt = await bcrypt.genSalt(10);
+  user.password = await bcrypt.hash(newPassword, salt);
+  await user.save();
+
+  res.status(200).json({ message: 'Password reset successful. Please sign in.' });
 });
 
 // @desc    Get user data
@@ -148,9 +211,21 @@ const getMe = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user.id);
   
   if (user) {
-    // Return token to allow frontend to reset storage timer explicitly
+    // Return explicit safe fields only (never send password/security-answer hashes)
     res.status(200).json({ 
-      ...user._doc,
+      _id: user.id,
+      name: user.name,
+      email: user.email,
+      cgpa: user.cgpa,
+      degree: user.degree,
+      branch: user.branch,
+      specialization: user.specialization,
+      batch: user.batch,
+      college: user.college,
+      anonymousName: user.anonymousName,
+      friendCode: user.friendCode,
+      friends: user.friends,
+      hasRecovery: Boolean(user.securityQuestion && user.securityAnswer),
       token: generateToken(user._id)
     });
   } else {
@@ -201,6 +276,20 @@ const updateProfile = asyncHandler(async (req, res) => {
       user.password = await bcrypt.hash(req.body.password, salt);
     }
 
+    const incomingQuestion = req.body.securityQuestion?.trim();
+    const incomingAnswer = req.body.securityAnswer?.trim();
+
+    if (incomingQuestion || incomingAnswer) {
+      if (!incomingQuestion || !incomingAnswer) {
+        res.status(400);
+        throw new Error('Please provide both security question and answer');
+      }
+
+      const salt = await bcrypt.genSalt(10);
+      user.securityQuestion = incomingQuestion;
+      user.securityAnswer = await bcrypt.hash(incomingAnswer.toLowerCase(), salt);
+    }
+
     // Save new academic mapping if it doesn't exist during update
     if (user.degree && user.branch && user.specialization) {
       try {
@@ -220,6 +309,7 @@ const updateProfile = asyncHandler(async (req, res) => {
       _id: updatedUser._id,
       name: updatedUser.name,
       email: updatedUser.email,
+      hasRecovery: Boolean(updatedUser.securityQuestion && updatedUser.securityAnswer),
       token: generateToken(updatedUser._id),
     });
   } else {
@@ -404,6 +494,8 @@ const generateToken = (id) => {
 module.exports = {
   registerUser,
   loginUser,
+  getForgotPasswordQuestion,
+  resetPasswordWithSecurityAnswer,
   logoutUser,
   getMe,
   updateProfile,

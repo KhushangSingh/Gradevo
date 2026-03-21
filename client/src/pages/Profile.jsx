@@ -14,6 +14,8 @@ const Profile = () => {
     const [formData, setFormData] = useState({
         name: '', email: '', cgpa: '', college: '', degree: '', branch: '', specialization: '', batch: ''
     });
+    const [securityQuestion, setSecurityQuestion] = useState('');
+    const [securityAnswer, setSecurityAnswer] = useState('');
     const [isEditing, setIsEditing] = useState(false);
     const [academicMap, setAcademicMap] = useState(fallbackMap);
 
@@ -63,9 +65,17 @@ const Profile = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.put('/api/users/profile', formData);
+            const payload = { ...formData };
+
+            if (securityQuestion.trim() || securityAnswer.trim()) {
+                payload.securityQuestion = securityQuestion;
+                payload.securityAnswer = securityAnswer;
+            }
+
+            await axios.put('/api/users/profile', payload);
             addToast('Profile updated successfully!', 'success');
             setIsEditing(false);
+            setSecurityAnswer('');
             fetchUser(); // Refresh context
         } catch (error) {
             addToast(error.response?.data?.message || 'Update failed', 'error');
@@ -103,12 +113,17 @@ const Profile = () => {
                                 name: user.name || '', email: user.email || '', cgpa: user.cgpa || '', college: user.college || '',
                                 degree: user.degree || '', branch: user.branch || '', specialization: user.specialization || '', batch: user.batch || ''
                             });
+                            setSecurityQuestion('');
+                            setSecurityAnswer('');
                         }
                         setIsEditing(!isEditing);
                     }}
-                    className={`px-4 py-2 rounded-xl text-sm font-bold transition-all border ${isEditing ? 'bg-red-500/10 text-red-500 border-red-200 hover:bg-red-500/20' : 'bg-primary/10 text-primary border-primary/20 hover:bg-primary/20'}`}
+                    className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all border ${isEditing ? 'bg-red-500/10 text-red-500 border-red-200 hover:bg-red-500/20' : 'bg-primary/10 text-primary border-primary/20 hover:bg-primary/20'}`}
                 >
                     {isEditing ? 'Cancel Editing' : 'Edit Profile'}
+                    <span className="material-symbols-outlined text-base leading-none">
+                        {isEditing ? 'close' : 'edit'}
+                    </span>
                 </button>
             </div>
 
@@ -197,6 +212,41 @@ const Profile = () => {
                             <div className="relative">
                                 <input type="number" step="0.01" name="cgpa" value={formData.cgpa} onChange={handleChange} className={`${inputClasses} pl-10`} disabled={!isEditing} />
                                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 material-symbols-outlined text-lg">school</span>
+                            </div>
+                        </div>
+
+                        <div className="border-t border-slate-100 pt-4">
+                            <h3 className="text-sm font-bold text-slate-900 mb-3">Security Recovery</h3>
+                            <div className="grid grid-cols-1 gap-4">
+                                <div>
+                                    <label className={labelClasses}>Security Question</label>
+                                    <input
+                                        type="text"
+                                        name="securityQuestion"
+                                        value={securityQuestion}
+                                        onChange={(e) => setSecurityQuestion(e.target.value)}
+                                        className={inputClasses}
+                                        disabled={!isEditing}
+                                        placeholder={user?.hasRecovery ? 'Update your question' : 'Set your recovery question'}
+                                    />
+                                </div>
+                                <div>
+                                    <label className={labelClasses}>Security Answer</label>
+                                    <input
+                                        type="text"
+                                        name="securityAnswer"
+                                        value={securityAnswer}
+                                        onChange={(e) => setSecurityAnswer(e.target.value)}
+                                        className={inputClasses}
+                                        disabled={!isEditing}
+                                        placeholder={user?.hasRecovery ? 'Enter new answer to update' : 'Set your recovery answer'}
+                                    />
+                                </div>
+                                {isEditing && (
+                                    <p className="text-xs text-slate-500">
+                                        To update recovery, fill both fields together.
+                                    </p>
+                                )}
                             </div>
                         </div>
 
