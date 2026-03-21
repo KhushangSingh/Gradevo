@@ -204,23 +204,23 @@ const Profile = () => {
                     )}
                 </form>
 
-                <div className="mt-8 pt-8 border-t border-slate-200 flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
-                    <div>
-                        <h3 className="text-slate-900 font-bold mb-1">Account Actions</h3>
-                        <p className="text-slate-500 text-xs">Sign out of your account on this device.</p>
-                    </div>
-                    <button onClick={() => { logout(); navigate('/login'); }} className="px-6 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-bold transition-colors flex items-center gap-2">
-                        <span className="material-symbols-outlined text-sm">logout</span>
-                        Log Out
-                    </button>
-                </div>
-
                 <div className="mt-8 pt-8 border-t border-red-100">
                     <h3 className="text-red-500 font-bold mb-2">Danger Zone</h3>
                     <p className="text-slate-500 text-xs mb-4">Once you delete your account, there is no going back. Please be certain.</p>
                     <button onClick={handleDeleteAccount} className="px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
                         <span className="material-symbols-outlined text-sm">delete_forever</span>
                         Delete Account
+                    </button>
+                </div>
+
+                <div className="mt-8 pt-8 border-t border-slate-200 flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
+                    <div>
+                        <h3 className="text-slate-900 font-bold mb-1">Account Actions</h3>
+                        <p className="text-slate-500 text-xs">Sign out of your account on this device.</p>
+                    </div>
+                    <button onClick={() => { logout(); navigate('/login'); }} className="px-6 py-2.5 bg-slate-100 border border-slate-200 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-bold transition-colors flex items-center gap-2 shadow-sm w-full sm:w-auto justify-center">
+                        <span className="material-symbols-outlined text-sm">logout</span>
+                        Log Out
                     </button>
                 </div>
             </div>

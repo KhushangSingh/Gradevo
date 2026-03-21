@@ -43,7 +43,6 @@ const Navbar = () => {
                 </nav>
 
                 {/* User & Actions */}
-                {user && (
                     <div className="flex items-center gap-3 shrink-0">
                         <Link to="/profile" className="flex items-center gap-2 hover:bg-slate-50 p-1.5 rounded-lg transition-colors group">
                             <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center border-2 border-primary/30 text-slate-700 font-bold text-sm">
@@ -54,11 +53,7 @@ const Navbar = () => {
                                 <p className="text-slate-500 text-[10px] mt-0.5">{user.branch}</p>
                             </div>
                         </Link>
-                        <button onClick={logout} title="Logout" className="flex items-center justify-center w-8 h-8 rounded-lg text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors border border-transparent hover:border-red-200">
-                            <span className="material-symbols-outlined text-[20px]">logout</span>
-                        </button>
                     </div>
-                )}
             </div>
         </header>
     );
