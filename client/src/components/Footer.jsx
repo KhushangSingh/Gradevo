@@ -8,6 +8,7 @@ const Footer = ({ theme = 'light' }) => {
                 <div className="flex flex-col md:flex-row items-center gap-2 md:gap-6">
                     <p className={`font-bold text-sm ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>© {new Date().getFullYear()} Gradevo. All rights reserved.</p>
                     <div className={`hidden md:block w-1.5 h-1.5 rounded-full ${isDark ? 'bg-white/10' : 'bg-slate-200'}`}></div>
+                    <div className="hidden">
                     <a
                         href="http://khushangsingh.vercel.app/"
                         target="_blank"
@@ -17,6 +18,7 @@ const Footer = ({ theme = 'light' }) => {
                         <span className="material-symbols-outlined text-sm">account_circle</span>
                         Developer
                     </a>
+                    </div>
                 </div>
 
                 <div className="flex items-center gap-6">

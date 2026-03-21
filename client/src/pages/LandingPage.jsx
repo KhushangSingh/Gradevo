@@ -4,8 +4,13 @@ import AuthContext from '../context/AuthContext';
 import Footer from '../components/Footer';
 
 const LandingPage = () => {
-    const { user } = useContext(AuthContext);
+    const { user, loading } = useContext(AuthContext);
     const [logoError, setLogoError] = useState(false);
+
+    // Wait for auth to initialise before deciding what to render.
+    // Without this guard, the landing page flashes for ~1-2s while the
+    // rolling session is being verified, before the redirect kicks in.
+    if (loading) return null;
 
     if (user) {
         return <Navigate to="/dashboard" />;
@@ -24,41 +29,41 @@ const LandingPage = () => {
             </div>
 
             {/* Navbar */}
-            <nav className="max-w-7xl mx-auto px-6 py-6 flex justify-between items-center relative z-20">
+            <nav className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6 flex justify-between items-center relative z-20">
                 <div className="flex items-center gap-2">
                     {logoError ? (
-                        <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-orange-500/20">
-                            <span className="material-symbols-outlined text-xl">show_chart</span>
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-orange-500/20">
+                            <span className="material-symbols-outlined text-base sm:text-xl">show_chart</span>
                         </div>
                     ) : (
-                        <img src="/Logo.png" alt="Gradevo" onError={() => setLogoError(true)} className="h-10 w-auto object-contain" />
+                        <img src="/Logo.png" alt="Gradevo" onError={() => setLogoError(true)} className="h-8 sm:h-10 w-auto object-contain" />
                     )}
-                    <h1 className="text-2xl font-black text-slate-900 tracking-tight">Gradevo</h1>
+                    <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Gradevo</h1>
                 </div>
-                <div className="flex items-center gap-4">
-                    <Link to="/login" className="px-6 py-2.5 rounded-xl font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors">
+                <div className="flex items-center gap-2">
+                    <Link to="/login" className="px-3 py-2 sm:px-5 sm:py-2.5 rounded-xl font-bold text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors">
                         Login
                     </Link>
-                    <Link to="/register" className="px-6 py-2.5 rounded-xl font-bold bg-slate-900 text-white hover:bg-slate-800 transition-all shadow-lg shadow-slate-900/20">
+                    <Link to="/register" className="px-3 py-2 sm:px-5 sm:py-2.5 rounded-xl font-bold text-sm bg-slate-900 text-white hover:bg-slate-800 transition-all shadow-lg shadow-slate-900/20">
                         Get Started
                     </Link>
                 </div>
             </nav>
 
             {/* Hero Section */}
-            <header className="max-w-7xl mx-auto px-6 py-24 lg:py-36 flex flex-col items-center text-center relative z-10">
-                <div className="space-y-8 max-w-4xl">
-                    <h1 className="text-6xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[1.05] text-slate-900 mx-auto">
+            <header className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-24 lg:py-36 flex flex-col items-center text-center relative z-10">
+                <div className="space-y-6 sm:space-y-8 max-w-4xl">
+                    <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[1.05] text-slate-900 mx-auto">
                         Know Where You <br />
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-rose-500 to-orange-600">Stand.</span>
                     </h1>
-                    <p className="text-xl text-slate-500 font-medium leading-relaxed max-w-2xl mx-auto">
+                    <p className="text-base sm:text-xl text-slate-500 font-medium leading-relaxed max-w-2xl mx-auto">
                         Gradevo connects with your college database to provide real-time academic rankings. Compare your performance with peers, batchmates, and your entire department securely.
                     </p>
-                    <div className="flex justify-center pt-8">
-                        <Link to="/register" className="px-8 py-4 rounded-2xl font-bold bg-orange-500 text-white text-lg hover:bg-orange-600 transition-all shadow-xl shadow-orange-500/30 hover:shadow-2xl hover:shadow-orange-500/40 flex items-center justify-center gap-2 group w-fit">
+                    <div className="flex justify-center pt-4 sm:pt-8">
+                        <Link to="/register" className="px-6 py-3 sm:px-8 sm:py-4 rounded-2xl font-bold bg-orange-500 text-white text-base sm:text-lg hover:bg-orange-600 transition-all shadow-xl shadow-orange-500/30 hover:shadow-2xl hover:shadow-orange-500/40 flex items-center justify-center gap-2 group w-fit">
                             Check My Rank
-                            <span className="material-symbols-outlined text-lg group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                            <span className="material-symbols-outlined text-base sm:text-lg group-hover:translate-x-1 transition-transform">arrow_forward</span>
                         </Link>
                     </div>
 
@@ -87,7 +92,7 @@ const LandingPage = () => {
                         <p className="text-slate-500 text-lg">The most accurate, granular, and private academic performance insights available.</p>
                     </div>
 
-                    <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 lg:gap-8">
                         {[
                             { icon: 'domain', title: 'College Verified', desc: 'Secure signup linked exclusively to your official college email domain.' },
                             { icon: 'leaderboard', title: 'Granular Rankings', desc: 'Filter rankings by Batch, Branch, and Specialization instantly.' },

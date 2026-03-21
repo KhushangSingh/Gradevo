@@ -72,7 +72,7 @@ const Profile = () => {
     const labelClasses = "text-xs font-medium text-slate-500 uppercase ml-1 block mb-1";
 
     return (
-        <div className="max-w-6xl mx-auto h-full flex flex-col">
+        <div className="max-w-6xl mx-auto">
             <div className="flex justify-between items-center mb-6">
                 <h2 className="text-3xl font-bold text-slate-900">My Profile</h2>
                 <button 
@@ -91,46 +91,47 @@ const Profile = () => {
                 </button>
             </div>
 
+            {/* On mobile: form first, then action cards. On lg+: side-by-side */}
             <div className="flex flex-col lg:flex-row gap-6 items-start">
                 
-                {/* Left Column: Sidebar / Profile Info */}
-                <div className="w-full lg:w-1/3 flex flex-col gap-6">
+                {/* Left Column: visible on lg+ only, reordered on mobile via order utilities */}
+                <div className="w-full lg:w-1/3 flex flex-col gap-6 order-2 lg:order-1">
                     {/* User Info Card */}
                     <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm backdrop-blur-xl flex flex-col items-center text-center">
-                        <div className="w-24 h-24 rounded-full bg-slate-200 flex items-center justify-center border-4 border-slate-50 text-slate-700 font-bold text-4xl shadow-lg mb-4">
+                        <div className="w-20 h-20 rounded-full bg-slate-200 flex items-center justify-center border-4 border-white text-slate-700 font-bold text-3xl shadow-lg mb-3">
                             {formData.name ? formData.name.charAt(0).toUpperCase() : '?'}
                         </div>
-                        <h3 className="text-slate-900 text-xl font-bold">{formData.name}</h3>
-                        <p className="text-slate-500 text-sm mb-4">{formData.email}</p>
+                        <h3 className="text-slate-900 text-lg font-bold">{formData.name}</h3>
+                        <p className="text-slate-500 text-sm">{formData.email}</p>
                     </div>
 
                     {/* Account Actions */}
-                    <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col gap-4">
+                    <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex flex-col gap-3">
                         <div>
-                            <h3 className="text-slate-900 font-bold mb-1">Account Actions</h3>
+                            <h3 className="text-slate-900 font-bold text-sm mb-0.5">Account Actions</h3>
                             <p className="text-slate-500 text-xs">Sign out of your account on this device.</p>
                         </div>
-                        <button onClick={() => { logout(); navigate('/login'); }} className="w-full py-2.5 bg-slate-100 border border-slate-200 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-bold transition-colors flex justify-center items-center gap-2 shadow-sm">
+                        <button onClick={() => { logout(); navigate('/login'); }} className="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 border border-slate-200 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-bold transition-colors shadow-sm self-start">
                             <span className="material-symbols-outlined text-sm">logout</span>
                             Log Out
                         </button>
                     </div>
 
                     {/* Danger Zone */}
-                    <div className="bg-red-50/50 border border-red-100 rounded-2xl p-6 shadow-sm flex flex-col gap-4">
+                    <div className="bg-red-50/50 border border-red-100 rounded-2xl p-5 shadow-sm flex flex-col gap-3">
                         <div>
-                            <h3 className="text-red-500 font-bold mb-1">Danger Zone</h3>
+                            <h3 className="text-red-500 font-bold text-sm mb-0.5">Danger Zone</h3>
                             <p className="text-slate-500 text-xs">Delete your account permanently.</p>
                         </div>
-                        <button onClick={handleDeleteAccount} className="w-full py-2.5 bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 rounded-xl text-sm font-bold transition-colors flex justify-center items-center gap-2">
+                        <button onClick={handleDeleteAccount} className="inline-flex items-center gap-2 px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 rounded-xl text-sm font-bold transition-colors self-start">
                             <span className="material-symbols-outlined text-sm">delete_forever</span>
                             Delete Account
                         </button>
                     </div>
                 </div>
 
-                {/* Right Column: Form */}
-                <div className="w-full lg:w-2/3 bg-white border border-slate-200 rounded-2xl p-6 lg:p-8 shadow-sm backdrop-blur-xl">
+                {/* Right Column: Form — appears first on mobile */}
+                <div className="w-full lg:w-2/3 bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 lg:p-8 shadow-sm backdrop-blur-xl order-1 lg:order-2">
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
