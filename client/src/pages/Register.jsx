@@ -52,7 +52,7 @@ const Register = () => {
       if (data?.collegeWarning) {
         addToast(data.collegeWarning, 'warning');
       }
-      navigate('/');
+      navigate('/dashboard');
     } catch (err) {
       addToast(err.response?.data?.message || 'Registration failed', 'error');
     }
@@ -67,21 +67,30 @@ const Register = () => {
         <div className="absolute -bottom-[20%] -right-[10%] w-[50%] h-[50%] bg-primary/10 rounded-full blur-[100px]"></div>
       </div>
 
+      {/* Back Button */}
+      <Link
+        to="/"
+        className="absolute top-6 left-6 z-20 flex items-center gap-1.5 text-slate-500 hover:text-slate-900 text-sm font-medium transition-colors group"
+      >
+        <span className="material-symbols-outlined text-lg group-hover:-translate-x-0.5 transition-transform">arrow_back</span>
+        Back to Home
+      </Link>
+
       <div className="bg-white border border-slate-200 p-8 rounded-2xl shadow-xl w-full max-w-2xl relative z-10 backdrop-blur-xl">
         <div className="flex flex-col items-center mb-8">
           <h2 className="text-2xl font-bold text-slate-900">Create Account</h2>
-          <p className="text-slate-500 text-sm">Join the leaderboard</p>
+          <p className="text-slate-500 text-sm">Join the Gradevo leaderboard</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className={labelClasses}>Full Name</label>
-              <input type="text" name="name" placeholder="John Doe" onChange={handleChange} className={inputClasses} required />
+              <input type="text" name="name" placeholder="Rahul Sharma" onChange={handleChange} className={inputClasses} required />
             </div>
             <div>
-              <label className={labelClasses}>Email</label>
-              <input type="email" name="email" placeholder="john@example.com" onChange={handleChange} className={inputClasses} required />
+              <label className={labelClasses}>College Email</label>
+              <input type="email" name="email" placeholder="rahul@college.ac.in" onChange={handleChange} className={inputClasses} required />
             </div>
           </div>
 
@@ -104,11 +113,11 @@ const Register = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className={labelClasses}>CGPA</label>
-              <input type="number" name="cgpa" placeholder="9.5" step="0.01" onChange={handleChange} className={inputClasses} required />
+              <input type="number" name="cgpa" placeholder="e.g. 8.75" step="0.01" onChange={handleChange} className={inputClasses} required />
             </div>
             <div>
-              <label className={labelClasses}>Batch</label>
-              <input type="number" name="batch" placeholder="2024" onChange={handleChange} className={inputClasses} required />
+              <label className={labelClasses}>Batch Year</label>
+              <input type="number" name="batch" placeholder="e.g. 2025" onChange={handleChange} className={inputClasses} required />
             </div>
           </div>
 
@@ -143,7 +152,7 @@ const Register = () => {
           </div>
 
           <button type="submit" className="w-full bg-gradient-to-r from-primary to-secondary hover:shadow-lg hover:shadow-primary/25 text-white py-3.5 rounded-xl font-bold transition-all active:scale-95 mt-4">
-            Register for Gradevo
+            Create My Account
           </button>
         </form>
 

@@ -15,7 +15,7 @@ const Login = () => {
     try {
       await login(email, password);
       addToast('Welcome back!', 'success');
-      navigate('/');
+      navigate('/dashboard');
     } catch (err) {
       addToast(err.response?.data?.message || 'Login failed', 'error');
     }
@@ -28,6 +28,15 @@ const Login = () => {
           <div className="absolute top-[30%] -right-[10%] w-[40%] h-[40%] bg-secondary/10 rounded-full blur-[100px]"></div>
       </div>
 
+      {/* Back Button */}
+      <Link
+        to="/"
+        className="absolute top-6 left-6 z-20 flex items-center gap-1.5 text-slate-500 hover:text-slate-900 text-sm font-medium transition-colors group"
+      >
+        <span className="material-symbols-outlined text-lg group-hover:-translate-x-0.5 transition-transform">arrow_back</span>
+        Back to Home
+      </Link>
+
       <div className="bg-white border border-slate-200 p-8 rounded-2xl shadow-xl w-full max-w-md relative z-10 backdrop-blur-xl">
         <div className="flex flex-col items-center mb-8">
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white shadow-lg shadow-primary/20 mb-4">
@@ -39,11 +48,11 @@ const Login = () => {
         
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div className="space-y-1">
-            <label className="text-xs font-medium text-slate-500 uppercase ml-1">Email Address</label>
+            <label className="text-xs font-medium text-slate-500 uppercase ml-1">College Email</label>
             <input
                 type="email"
                 className="w-full bg-slate-50 border border-slate-200 hover:border-primary/50 hover:bg-white rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-primary/50 focus:bg-white focus:ring-1 focus:ring-primary/50 transition-all"
-                placeholder="student@college.edu"
+                placeholder="yourname@college.ac.in"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
