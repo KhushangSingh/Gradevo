@@ -17,7 +17,7 @@ const Sidebar = () => {
                         <span className="material-symbols-outlined text-xl">show_chart</span>
                     </div>
                 ) : (
-                    <img src="/RR-logo.png" alt="Gradevo" onError={() => setLogoError(true)} className="w-10 h-10 rounded-xl object-cover shadow-lg shadow-primary/20 shrink-0" />
+                    <img src="/Logo.png" alt="Gradevo" onError={() => setLogoError(true)} className="w-10 h-10 rounded-xl object-cover shadow-lg shadow-primary/20 shrink-0" />
                 )}
                 <div>
                     <h1 className="text-slate-900 font-bold text-lg leading-tight">Gradevo</h1>

@@ -21,7 +21,7 @@ const LandingPage = () => {
                             <span className="material-symbols-outlined text-xl">show_chart</span>
                         </div>
                     ) : (
-                        <img src="/logo.png" alt="Gradevo" onError={() => setLogoError(true)} className="w-10 h-10 rounded-xl object-cover shadow-lg shadow-orange-500/20" />
+                        <img src="/Logo.png" alt="Gradevo" onError={() => setLogoError(true)} className="w-10 h-10 rounded-xl object-cover shadow-lg shadow-orange-500/20" />
                     )}
                     <h1 className="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700">Gradevo</h1>
                 </div>
